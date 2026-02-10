@@ -187,6 +187,11 @@ function formatCheckpointTimestamp(
   return new Date(ms).toISOString();
 }
 
+function checkpointTimestampMs(ts?: { seconds?: bigint; nanos?: number } | null): number | null {
+  if (!ts?.seconds) return null;
+  return Number(ts.seconds) * 1000 + Math.floor((ts.nanos ?? 0) / 1_000_000);
+}
+
 function formatLocalNow(): string {
   return new Date().toISOString();
 }
@@ -422,8 +427,11 @@ async function main() {
 
     const checkpointSeq = checkpoint?.sequenceNumber?.toString();
     const checkpointTime = formatCheckpointTimestamp(checkpoint?.summary?.timestamp);
+    const checkpointTimeMs = checkpointTimestampMs(checkpoint?.summary?.timestamp);
+    const startMinusCheckpointMs =
+      checkpointTimeMs === null ? 'n/a' : String(Date.parse(decodeStartIso) - checkpointTimeMs);
     console.log(
-      `[decode] checkpoint=${checkpointSeq ?? 'n/a'} checkpoint_time=${checkpointTime} start=${decodeStartIso} end=${decodeEndIso} duration_ms=${formatMs(decodeEndMs - decodeStartMs)} decoded=${decodedEventCount} errors=${decodeErrorCount}`,
+      `[decode] checkpoint=${checkpointSeq ?? 'n/a'} checkpoint_time=${checkpointTime} start=${decodeStartIso} end=${decodeEndIso} duration_ms=${formatMs(decodeEndMs - decodeStartMs)} decoded=${decodedEventCount} errors=${decodeErrorCount} start_minus_checkpoint_ms=${startMinusCheckpointMs}`,
     );
     if (checkpointSeq) {
       const outPath = join(checkpointDir, `checkpoint_${checkpointSeq}.json`);
