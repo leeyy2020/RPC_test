@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "scripts": {
+    "start": "tsx subscribe_checkpoints.ts"
+  },
+  "devDependencies": {
+    "@mysten/sui": "^2.2.0",
+    "dotenv": "^17.2.3",
+    "tsx": "^4.21.0"
+  }
+}
