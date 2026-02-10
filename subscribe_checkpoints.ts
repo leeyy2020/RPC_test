@@ -9,7 +9,7 @@ import { SuiJsonRpcClient as JsonRpcClient } from '@mysten/sui/jsonRpc';
 
 const baseUrl = process.env.FULLNODE_URL ?? 'http://127.0.0.1:9000';
 const targetObjectId = process.env.TARGET_OBJECT_ID?.toLowerCase();
-const checkpointDir = '/root/rpc_test/checkpoints_json';
+const checkpointDir = process.env.CHECKPOINT_DIR ?? join(process.cwd(), 'checkpoints_json');
 const jsonRpcUrl = process.env.JSONRPC_URL ?? baseUrl;
 const decodeConcurrency = Math.max(
   1,
